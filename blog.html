@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Veil of Veritas</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--black:#09090c;--card:#16161f;--card-hover:#1c1c28;--border:rgba(255,255,255,0.08);--border-hover:rgba(160,100,255,0.3);--purple:#8b5cf6;--purple-bright:#a78bfa;--purple-dim:rgba(139,92,246,0.15);--white:#f4f4f6;--muted:rgba(244,244,246,0.5);--faint:rgba(244,244,246,0.25)}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{background:#09090c!important;color:#f4f4f6!important;overflow-x:hidden}
+    .logo-circle{width:130px!important;height:130px!important;max-width:130px!important;min-width:130px!important;overflow:hidden!important;border-radius:14px;background:#fff;flex-shrink:0}
+    .logo-circle img{width:100%!important;height:100%!important;max-width:130px!important;max-height:130px!important;object-fit:contain!important;padding:6px;display:block!important}
+    header{background:#09090c!important;border-bottom:1px solid rgba(255,255,255,0.08);padding:32px 20px;text-align:center;position:relative;z-index:100}
+  </style>
+</head>
+<body style="background:#09090c;color:#f4f4f6;">
+
+<canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.7;"></canvas>
+
+<header>
+  <div class="header-logo-wrap">
+    <div class="logo-circle"><img src="logo.jpg" alt="Veil of Veritas"></div>
+    <div class="logo-text-group">
+      <div class="site-title">VEIL OF VERITAS</div>
+      <div class="site-tagline">Unveiling The Truth</div>
+    </div>
+  </div>
+  <nav>
+    <a href="blog.html" class="active">Blog</a>
+    <a href="index.html#founders">Founders</a>
+    <a href="about.html">About</a>
+    <a href="future.html">Future Endeavours</a>
+    <a href="volunteer.html">Volunteer</a>
+    <a href="contact.html">Contact</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<section class="section" style="padding-top:72px;padding-bottom:44px;">
+  <div class="section-header" style="margin-bottom:20px;">
+    <div>
+      <div class="section-label">Archive</div>
+      <div class="section-title">All Analysis</div>
+    </div>
+  </div>
+  <p style="max-width:760px;color:var(--muted);font-size:1rem;line-height:1.9;">
+    A complete archive of Veil of Veritas writing, research, and geopolitical commentary.
+    Open any dispatch to read the full piece.
+  </p>
+</section>
+
+<div style="border-top: 1px solid rgba(255,255,255,0.06); background: #0d0d14;">
+  <div class="section" style="padding-top:44px;">
+    <div id="posts-grid"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-social">
+      <a href="https://www.linkedin.com/company/veil-of-veritas/" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/veilofveritas/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener" class="social-link" title="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </a>
+    </div>
+    <div class="footer-brand">Veil of Veritas</div>
+    <div class="footer-links">
+      <a href="contact.html">Contact</a>
+      <a href="volunteer.html">Volunteer</a>
+      <a href="admin.html">Admin</a>
+    </div>
+    <div class="footer-copy">© 2026 Veil of Veritas. All rights reserved.</div>
+    <div class="footer-design-credit">Designed by Rehaan Waheed</div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  const particles = Array.from({length:35},()=>({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.1+0.3,sp:Math.random()*0.15+0.04,drift:(Math.random()-0.5)*0.25,op:Math.random()*0.2+0.06,life:Math.random(),lifeSpeed:Math.random()*0.003+0.001}));
+  const waveData=[
+    {amp:36,freq:0.0017,speed:0.0007,yR:0.35,alpha:0.055,color:'139,92,246',phase:0},
+    {amp:25,freq:0.0023,speed:0.001,yR:0.52,alpha:0.042,color:'139,92,246',phase:2.1},
+    {amp:18,freq:0.003,speed:0.0016,yR:0.66,alpha:0.03,color:'160,110,255',phase:4.2},
+    {amp:12,freq:0.0038,speed:0.0024,yR:0.78,alpha:0.022,color:'100,60,200',phase:1.0}
+  ];
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    waveData.forEach((w,i)=>{
+      const breathe=0.4+0.6*(0.5+0.5*Math.sin(t*0.00018*(i+1)+w.phase));
+      const alpha=w.alpha*breathe;
+      const wy=H*w.yR;
+      ctx.beginPath(); ctx.moveTo(0,H);
+      for(let x=0;x<=W;x+=3){const y=wy+Math.sin(x*w.freq+t*w.speed*1000)*w.amp+Math.sin(x*w.freq*1.7+t*w.speed*700+1.2)*w.amp*0.4+Math.sin(x*w.freq*0.5+t*w.speed*300+w.phase)*w.amp*0.25;ctx.lineTo(x,y);}
+      ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+      ctx.fillStyle=`rgba(${w.color},${alpha})`;ctx.fill();
+      ctx.beginPath();
+      for(let x=0;x<=W;x+=3){const y=wy+Math.sin(x*w.freq+t*w.speed*1000)*w.amp+Math.sin(x*w.freq*1.7+t*w.speed*700+1.2)*w.amp*0.4+Math.sin(x*w.freq*0.5+t*w.speed*300+w.phase)*w.amp*0.25;x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+      ctx.strokeStyle=`rgba(${w.color},${alpha*2})`;ctx.lineWidth=1;ctx.stroke();
+    });
+    particles.forEach(p=>{
+      p.life+=p.lifeSpeed;
+      const la=p.op*Math.abs(Math.sin(p.life*Math.PI));
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(180,140,255,${la})`;ctx.fill();
+      p.y-=p.sp; p.x+=p.drift;
+      if(p.y<-4){p.y=H+4;p.x=Math.random()*W;}
+      if(p.x<-4)p.x=W+4; if(p.x>W+4)p.x=-4;
+    });
+    t+=16;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
