@@ -4,3 +4,7 @@
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "nft"
+
+[functions."posts"]
+  node_bundler = "nft"

@@ -410,7 +410,12 @@ function initPublishForm() {
       }
     } catch (error) {
       console.error(error);
-      alert("Publishing failed. Please redeploy with the Netlify function files and try again.");
+      const errMsg = document.getElementById("publish-error");
+      if (errMsg) {
+        errMsg.textContent = "Publishing failed: " + error.message;
+        errMsg.style.display = "block";
+        setTimeout(() => { errMsg.style.display = "none"; }, 6000);
+      }
     }
   });
 }
@@ -451,7 +456,12 @@ async function renderAdminPosts() {
         await deletePost(post.id);
       } catch (error) {
         console.error(error);
-        alert("Delete failed. Please try again.");
+        const errMsg = document.getElementById("publish-error");
+        if (errMsg) {
+          errMsg.textContent = "Delete failed. Please try again.";
+          errMsg.style.display = "block";
+          setTimeout(() => { errMsg.style.display = "none"; }, 4000);
+        }
       }
     });
 

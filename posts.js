@@ -1,127 +1,98 @@
 // netlify/functions/posts.js
-// Handles GET / POST / DELETE for blog posts using Netlify Blobs
+// GET  → return all posts
+// POST → add a post  (body: JSON post object)
+// DELETE ?id=xxx → remove post by id
 
 const { getStore } = require("@netlify/blobs");
 
-const BLOB_KEY = "all_posts";
+const STORE_NAME = "vov_posts";
+const KEY = "posts";
 
-// ── helpers ────────────────────────────────────────────────────────────────────
+const headers = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
 
-async function loadPosts(store) {
+async function readPosts(store) {
   try {
-    const raw = await store.get(BLOB_KEY, { type: "text" });
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
+    const data = await store.get(KEY, { type: "text" });
+    if (!data) return [];
+    const parsed = JSON.parse(data);
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 }
 
-async function savePosts(store, posts) {
-  await store.set(BLOB_KEY, JSON.stringify(posts));
+async function writePosts(store, posts) {
+  await store.set(KEY, JSON.stringify(posts));
 }
-
-function cors(headers = {}) {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json",
-    ...headers,
-  };
-}
-
-// ── handler ────────────────────────────────────────────────────────────────────
 
 exports.handler = async function (event) {
-  // Preflight
   if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers: cors() };
+    return { statusCode: 204, headers };
   }
 
-  const store = getStore("vov_posts");
-
-  // ── GET — return all posts ─────────────────────────────────────────────────
-  if (event.httpMethod === "GET") {
-    const posts = await loadPosts(store);
-    const sorted = posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  let store;
+  try {
+    store = getStore(STORE_NAME);
+  } catch (e) {
     return {
-      statusCode: 200,
-      headers: cors(),
-      body: JSON.stringify({ posts: sorted }),
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: "Storage unavailable: " + e.message }),
     };
   }
 
-  // ── POST — add a new post ──────────────────────────────────────────────────
+  if (event.httpMethod === "GET") {
+    const posts = await readPosts(store);
+    posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    return { statusCode: 200, headers, body: JSON.stringify({ posts }) };
+  }
+
   if (event.httpMethod === "POST") {
     let incoming;
     try {
       incoming = JSON.parse(event.body || "{}");
     } catch {
-      return {
-        statusCode: 400,
-        headers: cors(),
-        body: JSON.stringify({ error: "Invalid JSON body." }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Invalid JSON" }) };
     }
 
     if (!incoming.title || !incoming.body) {
-      return {
-        statusCode: 400,
-        headers: cors(),
-        body: JSON.stringify({ error: "title and body are required." }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "title and body required" }) };
     }
 
     const post = {
-      id:        incoming.id        || Date.now().toString(),
-      title:     incoming.title,
-      body:      incoming.body,
-      category:  incoming.category  || "Geopolitics",
-      author:    incoming.author    || "",
-      imageUrl:  incoming.imageUrl  || "",
-      timestamp: incoming.timestamp || Date.now(),
+      id:        String(incoming.id || Date.now()),
+      title:     String(incoming.title),
+      body:      String(incoming.body),
+      category:  String(incoming.category || "Geopolitics"),
+      author:    String(incoming.author || ""),
+      imageUrl:  String(incoming.imageUrl || ""),
+      timestamp: Number(incoming.timestamp) || Date.now(),
     };
 
-    const posts = await loadPosts(store);
+    const posts = await readPosts(store);
     posts.push(post);
-    await savePosts(store, posts);
-
-    const sorted = posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    return {
-      statusCode: 200,
-      headers: cors(),
-      body: JSON.stringify({ posts: sorted }),
-    };
+    await writePosts(store, posts);
+    posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    return { statusCode: 200, headers, body: JSON.stringify({ posts }) };
   }
 
-  // ── DELETE — remove post by ?id= ──────────────────────────────────────────
   if (event.httpMethod === "DELETE") {
     const id = (event.queryStringParameters || {}).id;
     if (!id) {
-      return {
-        statusCode: 400,
-        headers: cors(),
-        body: JSON.stringify({ error: "Missing id query param." }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "id param required" }) };
     }
 
-    const posts   = await loadPosts(store);
+    const posts = await readPosts(store);
     const updated = posts.filter((p) => String(p.id) !== String(id));
-    await savePosts(store, updated);
-
-    const sorted = updated.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    return {
-      statusCode: 200,
-      headers: cors(),
-      body: JSON.stringify({ posts: sorted }),
-    };
+    await writePosts(store, updated);
+    updated.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    return { statusCode: 200, headers, body: JSON.stringify({ posts: updated }) };
   }
 
-  return {
-    statusCode: 405,
-    headers: cors(),
-    body: JSON.stringify({ error: "Method not allowed." }),
-  };
+  return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed" }) };
 };
